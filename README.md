@@ -11,7 +11,7 @@ runThings：一个小型IoT管理中间件。可多开
 
 #### 安装教程
 
-1.  xxxx
+1.  go mod init runThings
 2.  xxxx
 3.  xxxx
 
