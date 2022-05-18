@@ -6,7 +6,7 @@ runThings：一个小型IoT管理中间件。可多开
 提供心跳处理：RabbitMQ + Redis ，通过发送 
 
 #### 软件架构
-软件架构说明
+![readme](https://gitee.com/luoyaosheng/run-things/raw/master/doc/readme.png)
 
 
 #### 安装教程
