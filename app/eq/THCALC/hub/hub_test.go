@@ -70,17 +70,26 @@ var MessagePubHandler mqtt.MessageHandler = func(mqttClient mqtt.Client, msg mqt
 		}
 
 		// 通过 告警时，自增 +1 进行修改
-		m = map[string]float64{
+		content := map[string]interface{}{
 			"temperature": m["temperature"] + 1,
 			"humidity":    m["humidity"] + 1,
 		}
-		dataType, _ := json.Marshal(m)
-		err = service.SetRdValue(sn+"_m", dataType)
-		if err != nil {
-			logx.Error(err)
-			return
+		//dataType, _ := json.Marshal(content)
+		//err = service.SetRdValue(sn+"_m", dataType)
+		//if err != nil {
+		//	logx.Error(err)
+		//	return
+		//}
+		// 直接修改Redis，修改成通过发送到 runTings 操作
+
+		threshold := model.Eq2MqThreshold{
+			Sn:      sn,
+			Content: content,
 		}
+		dataType, _ := json.Marshal(threshold)
+		thresholdMQ(string(dataType))
 	}
+
 	if status == config.EqStatusAlarm && msf["temperature"].(float64) > 50.0 {
 		// 模拟下发指令
 
@@ -113,10 +122,14 @@ func InsertMySQL(sn, productKey, title, content string, status int) {
 func cmdMQ(content string) {
 	rabbitmqCmd.PublishSimple(content)
 }
+func thresholdMQ(content string) {
+	rabbitmqThreshold.PublishSimple(content)
+}
 
 var (
-	rabbitmqCmd *service.RabbitMQ
-	db          *sqlx.DB
+	rabbitmqCmd       *service.RabbitMQ
+	rabbitmqThreshold *service.RabbitMQ
+	db                *sqlx.DB
 )
 
 func TestHub(t *testing.T) {
@@ -145,6 +158,7 @@ func TestHub(t *testing.T) {
 
 	// 获取 rabbitmq
 	rabbitmqCmd = service.NewRabbitMQSimple("runThings-cmd-"+model2.ProductKey, "amqp://admin:admin@127.0.0.1:5672/")
+	rabbitmqThreshold = service.NewRabbitMQSimple("runThings-threshold", "amqp://admin:admin@127.0.0.1:5672/")
 
 	// 获取 mysql
 	database, err := sqlx.Open("mysql", "root:123456@tcp(127.0.0.1:3306)/eq")

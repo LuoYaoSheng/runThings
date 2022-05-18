@@ -17,6 +17,7 @@ import (
 var (
 	rabbitmqLog       *service.RabbitMQ
 	rabbitmqHeartbeat *service.RabbitMQ
+	rabbitmqThreshold *service.RabbitMQ
 
 	Conf config.Config
 )
@@ -39,15 +40,22 @@ func NewServiceContext() {
 		logx.Error(err1)
 	}
 
-	// 队列接收日志
+	// 订阅日志
 	go func() {
 		rabbitmqLog = service.NewRabbitMQSimple(Conf.RunThings.Logs, Conf.RunThings.Mqurl)
 		rabbitmqLog.ConsumeSimple(receiveLog)
 	}()
 
+	// 订阅心跳
 	go func() {
 		rabbitmqHeartbeat = service.NewRabbitMQSimple(Conf.RunThings.Heartbeat, Conf.RunThings.Mqurl)
 		rabbitmqHeartbeat.ConsumeSimple(receiveHeartbeat)
+	}()
+
+	// 订阅阈值
+	go func() {
+		rabbitmqThreshold = service.NewRabbitMQSimple(Conf.RunThings.Threshold, Conf.RunThings.Mqurl)
+		rabbitmqThreshold.ConsumeSimple(receiveThreshold)
 	}()
 }
 
@@ -70,6 +78,21 @@ func receiveHeartbeat(str string) {
 		return
 	}
 	receiveHeartbeatModel(&hb)
+}
+
+func receiveThreshold(str string) {
+
+	fmt.Println("------------------")
+	fmt.Println(str)
+	fmt.Println("------------------")
+
+	var threshold model.Eq2MqThreshold
+	err5 := json.Unmarshal([]byte(str), &threshold)
+	if err5 != nil {
+		logx.Error(err5)
+		return
+	}
+	receiveThresholdModel(&threshold)
 }
 
 func receiveRedis(str string) {
@@ -168,5 +191,14 @@ func receiveHeartbeatModel(hb *model.Eq2MqHeartbeat) {
 			logx.Error(err)
 			return
 		}
+	}
+}
+
+func receiveThresholdModel(threshold *model.Eq2MqThreshold) {
+	dataType, _ := json.Marshal(threshold.Content)
+	err := service.SetRdValue(threshold.Sn+"_m", string(dataType))
+	if err != nil {
+		logx.Error(err)
+		return
 	}
 }

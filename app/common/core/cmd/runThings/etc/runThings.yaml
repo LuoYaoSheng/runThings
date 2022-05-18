@@ -11,6 +11,7 @@ RunThings:
   Logs: "runThings-logs"
   Heartbeat: "runThings-heartbeat"
   Cmd: "runThings-cmd-"
+  Threshold: "runThings-threshold"
 
 Mqtt:
   Broker:   "ws://emqx:8083/mqtt"

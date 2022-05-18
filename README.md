@@ -1,7 +1,9 @@
 # runThings
 
 #### 介绍
-runThings：一个小型IoT管理中间件。
+runThings：一个小型IoT管理中间件。可多开
+
+提供心跳处理：RabbitMQ + Redis ，通过发送 
 
 #### 软件架构
 软件架构说明
