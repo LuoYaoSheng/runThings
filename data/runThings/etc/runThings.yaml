@@ -1,0 +1,30 @@
+Name: runThings
+Host: 0.0.0.0
+Port: 3002
+Mode: dev
+
+RabbitMq:
+  Mqurl:     "amqp://admin:admin@rabbitmq:5672/"
+  Logs: "runThings-logs"
+  Heartbeat: "runThings-heartbeat"
+  Cmd: "runThings-cmd-"
+
+Mqtt:
+  Broker:   "ws://emqx:8083/mqtt"
+  Username: "goThings-mq"
+  Password: ""
+  Topic:    "event/goTings/"
+  Qos:      0
+
+Influx:
+  Addr:      "http://influxdb:8086"
+  Username:  "root"
+  Password:  "root"
+  Database:  "goThings"
+  Precision: ""
+  Prefix:    "mq_"
+
+Redis:
+  Addr:     "redis:6379"
+  Password: "123456"
+  DB:       0

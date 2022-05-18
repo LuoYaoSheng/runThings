@@ -15,7 +15,7 @@ runThings：一个小型IoT管理中间件。
 
 #### 使用说明
 
-1.  xxxx
+1.  启动
 2.  xxxx
 3.  xxxx
 

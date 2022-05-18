@@ -1,0 +1,33 @@
+Name: runThings-mq
+Host: 0.0.0.0
+Port: 3002
+Mode: dev
+
+# 本地调试，ip地址请更换成 127.0.0.1 或 localhost
+# 或者 本地修改 host
+
+RunThings:
+  Mqurl:     "amqp://admin:admin@rabbitmq:5672/"
+  Logs: "runThings-logs"
+  Heartbeat: "runThings-heartbeat"
+  Cmd: "runThings-cmd-"
+
+Mqtt:
+  Broker:   "ws://emqx:8083/mqtt"
+  Username: "runThings-mq"
+  Password: ""
+  Topic:    "event/runTings/"
+  Qos:      0
+
+Influx:
+  Addr:      "http://influxdb:8086"
+  Username:  "root"
+  Password:  "root"
+  Database:  "runThings"
+  Precision: ""
+  Prefix:    "mq_"
+
+Redis:
+  Addr:     "redis:6379"
+  Password: "123456"
+  DB:       0

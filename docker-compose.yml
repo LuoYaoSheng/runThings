@@ -1,0 +1,187 @@
+version: '3.3'
+services:
+  redis:
+    image: redis:6.2.7
+    restart: always
+    hostname: redis
+    container_name: redis
+    privileged: true
+    ports:
+      - "6379:6379"
+    environment:
+      TZ: Asia/Shanghai
+    volumes:
+#      - ./data/redis/data:/data:rw
+      - ./data/redis/conf/redis.conf:/etc/redis/redis.conf
+#      - ./data/redis/logs:/logs:rw
+    command: [ "redis-server","/etc/redis/redis.conf" ]
+    networks:
+      - runThings_net
+
+  # 业务服务
+  mysql:
+    image: mysql/mysql-server:8.0.28
+    hostname: mysql
+    container_name: mysql
+    environment:
+      # 时区上海
+      TZ: Asia/Shanghai
+      # root 密码
+      MYSQL_ROOT_PASSWORD: 123456
+    ports:
+      - "3306:3306"
+#    volumes:
+      # 数据挂载
+#      - ./data/mysql/data:/var/lib/mysql
+      # 日志
+    command:
+      # 将mysql8.0默认密码策略 修改为 原先 策略 (mysql8.0对其默认策略做了更改 会导致密码无法匹配)
+      --default-authentication-plugin=mysql_native_password
+      --character-set-server=utf8mb4
+      --collation-server=utf8mb4_general_ci
+      --explicit_defaults_for_timestamp=true
+      --lower_case_table_names=1
+      # 需要以下操作，方便外部访问
+      # mysql -uroot -p123456
+      # use mysql;
+      # update user set host='%' where user='root';
+      # flush privileges;
+    privileged: true
+    restart: always
+    networks:
+      - runThings_net
+
+  # mqtt服务器
+  # - 通知客户端：使用 emqx api [ 单独启 websocket ，此处临时借用 ]
+  # - 将设备日志写入时序数据库
+  emqx:
+    image: emqx/emqx:4.4.3
+    hostname: emqx
+    container_name: emqx
+    restart: always
+    privileged: true
+    ports:
+      - "1883:1883"
+      - "8081:8081"
+      - "8083:8083"
+      - "8084:8084"
+      - "8883:8883"
+      - "18083:18083"
+    environment:
+      TZ: Asia/Shanghai
+    networks:
+      - runThings_net
+
+  grafana:
+    image: grafana/grafana:8.0.6
+    container_name: grafana
+    hostname: grafana
+    restart: always
+    user: root
+    environment:
+      TZ: Asia/Shanghai
+#    volumes:
+#      - ./data/grafana/data:/var/lib/grafana
+    ports:
+      - "3000:3000"
+    networks:
+      - runThings_net
+    depends_on:
+      - influxdb
+
+  influxdb:
+    image: influxdb:1.8
+    container_name: influxdb
+    hostname: influxdb
+    restart: always
+    environment:
+      - INFLUXDB_DB=runThings
+      - INFLUXDB_ADMIN_USER=root
+      - INFLUXDB_ADMIN_PASSWORD=root
+      - INFLUXDB_HTTP_AUTH_ENABLED=true
+    ports:
+      - "28083:8083"
+      - "8086:8086"
+    volumes:
+      - ./data/influxdb/conf:/etc/influxdb
+#      - ./data/influxdb/data:/var/lib/influxdb/data
+#      - ./data/influxdb/meta:/var/lib/influxdb/meta
+#      - ./data/influxdb/wal:/var/lib/influxdb/wal
+    networks:
+      - runThings_net
+  # 连接业务系统
+  # 异常事件通知: 告警、设备操作应答
+  rabbitmq:
+    image: rabbitmq:management
+    container_name: rabbitmq
+    hostname: rabbitmq
+    restart: always
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      TZ: Asia/Shanghai
+      RABBITMQ_DEFAULT_VHOST: '/'
+      RABBITMQ_DEFAULT_USER: admin
+      RABBITMQ_DEFAULT_PASS: admin
+    networks:
+      - runThings_net
+
+#  etcd:
+#    image: quay.io/coreos/etcd:v3.3.12
+#    container_name: etcd-v3
+#    hostname: etcd
+#    ports:
+#      - "2379:2379"
+#      - "2380:2380"
+#    environment:
+#      ETCDCTL_API: 3
+##    volumes:
+##      - ./data/etcd/etcd-data:/etcd-data
+#    command:
+#      - "/usr/local/bin/etcd"
+#      - "--name"
+#      - "s1"
+#      - "--data-dir"
+#      - "/etcd-data"
+#      - "--advertise-client-urls"
+#      - "http://0.0.0.0:2379"
+#      - --listen-client-urls
+#      - "http://0.0.0.0:2379"
+#      - "--initial-advertise-peer-urls"
+#      - "http://0.0.0.0:2380"
+#      - "--listen-peer-urls"
+#      - "http://0.0.0.0:2380"
+#      - "--initial-cluster-token"
+#      - "tkn"
+#      - "--initial-cluster"
+#      - "s1=http://0.0.0.0:2380"
+#      - "--initial-cluster-state"
+#      - "new"
+#    networks:
+#      - runThings_net
+
+  # 设备信息转发
+  runThings:
+    image: luoyaosheng/runthings:1.0
+    restart: always
+    hostname: runThings
+    container_name: runThings
+    privileged: true
+    environment:
+      TZ: Asia/Shanghai
+#    volumes:
+#      - ./data/runThings/etc:/app/etc
+    networks:
+      - runThings_net
+    depends_on:
+      - influxdb
+      - rabbitmq
+      - emqx
+
+networks:
+  runThings_net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.30.0.0/16
