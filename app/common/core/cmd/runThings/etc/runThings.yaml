@@ -1,4 +1,4 @@
-Name: runThings-mq
+Name: runThings
 Host: 0.0.0.0
 Port: 3002
 Mode: dev
