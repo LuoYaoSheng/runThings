@@ -4,9 +4,10 @@ package simulation
 import (
 	"fmt"
 	"runThings/app/eq/THCALC/model"
-	"runThings/common/config"
-	model2 "runThings/common/model"
-	"runThings/common/service"
+
+	"github.com/LuoYaoSheng/runThingsCommon/common/config"
+	model2 "github.com/LuoYaoSheng/runThingsCommon/common/model"
+	"github.com/LuoYaoSheng/runThingsCommon/common/service"
 
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 	"github.com/zeromicro/go-zero/core/logx"

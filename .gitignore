@@ -19,3 +19,5 @@
 *.DS_Store
 go.sum
 go.mod
+
+*/bin

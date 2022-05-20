@@ -4,9 +4,10 @@ package hub
 import (
 	"fmt"
 	model2 "runThings/app/eq/THCALC/model"
-	"runThings/common/config"
-	"runThings/common/model"
-	"runThings/common/service"
+
+	"github.com/LuoYaoSheng/runThingsCommon/common/config"
+	"github.com/LuoYaoSheng/runThingsCommon/common/model"
+	"github.com/LuoYaoSheng/runThingsCommon/common/service"
 
 	"strconv"
 	"strings"

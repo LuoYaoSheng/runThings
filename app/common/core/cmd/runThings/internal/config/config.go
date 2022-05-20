@@ -2,7 +2,8 @@ package config
 
 import (
 	"runThings/app/common/core/cmd/model"
-	"runThings/common/config"
+
+	"github.com/LuoYaoSheng/runThingsCommon/common/config"
 
 	"github.com/zeromicro/go-zero/core/service"
 )

@@ -4,9 +4,10 @@ package api
 import (
 	"runThings/app/eq/THCALC/cmd/rpc"
 	"runThings/app/eq/THCALC/model"
-	"runThings/common/config"
-	"runThings/common/service"
 	"testing"
+
+	"github.com/LuoYaoSheng/runThingsCommon/common/config"
+	"github.com/LuoYaoSheng/runThingsCommon/common/service"
 
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 	"github.com/zeromicro/go-zero/core/logx"

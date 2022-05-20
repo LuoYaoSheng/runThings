@@ -2,10 +2,11 @@ package rpc
 
 import (
 	model2 "runThings/app/eq/THCALC/model"
-	"runThings/common/config"
-	"runThings/common/model"
-	"runThings/common/service"
 	"testing"
+
+	"github.com/LuoYaoSheng/runThingsCommon/common/config"
+	"github.com/LuoYaoSheng/runThingsCommon/common/model"
+	"github.com/LuoYaoSheng/runThingsCommon/common/service"
 
 	"github.com/zeromicro/go-zero/core/logx"
 	"k8s.io/apimachinery/pkg/util/json"
