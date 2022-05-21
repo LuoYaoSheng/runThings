@@ -7,12 +7,12 @@ import (
 	"strconv"
 	"time"
 
-	config2 "github.com/LuoYaoSheng/runThingsCommon/common/config"
-	"github.com/LuoYaoSheng/runThingsCommon/common/model"
-	"github.com/LuoYaoSheng/runThingsCommon/common/service"
+	config2 "github.com/LuoYaoSheng/runThingsConfig/config"
+	"github.com/LuoYaoSheng/runThingsConfig/model"
+	"github.com/LuoYaoSheng/runThingsServer/core"
+	"github.com/zeromicro/go-zero/core/logx"
 
 	"github.com/go-redis/redis/v8"
-	"github.com/zeromicro/go-zero/core/logx"
 )
 
 var (
