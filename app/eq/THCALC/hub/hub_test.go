@@ -168,5 +168,7 @@ func TestHub(t *testing.T) {
 	}
 	db = database
 
+	// 获取告警规则
+
 	select {}
 }

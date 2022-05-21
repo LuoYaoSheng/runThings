@@ -2,7 +2,6 @@ package simulation
 
 // 模拟一台设备
 import (
-	"fmt"
 	"runThings/app/eq/THCALC/model"
 
 	"github.com/LuoYaoSheng/runThingsCommon/common/config"
@@ -52,7 +51,8 @@ func TestSimulation(t *testing.T) {
 
 	pkey := model.ProductKey
 	rand.Seed(time.Now().Unix())
-	sn := "tc_" + fmt.Sprintf("%03d", rand.Intn(10)+1) // 设置动态，可以开启多个设备
+	//sn := "tc_" + fmt.Sprintf("%03d", rand.Intn(10)+1) // 设置动态，可以开启多个设备
+	sn := "tc_" + "0001"
 
 	mqttCfg = &config.MqttConf{
 		Broker:   "ws://127.0.0.1:8083/mqtt",
