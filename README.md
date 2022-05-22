@@ -17,9 +17,18 @@ runThings：一个小型IoT管理中间件。可多开
 
 #### 使用说明
 
-1.  启动
-2.  xxxx
-3.  xxxx
+1. 启动
+2. xxxx
+3. xxxx
+
+#### 常见错误
+1、网络启动失败
+```
+ERROR: Pool overlaps with other one on this address space
+
+修改 subnet 即可
+```
+
 
 #### 参与贡献
 

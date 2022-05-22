@@ -3,10 +3,11 @@ FROM golang:alpine AS builder
 LABEL stage=gobuilder
 
 ENV CGO_ENABLED 0
-ENV GOOS linux
 ENV GOPROXY https://goproxy.cn,direct
 
-WORKDIR /build/zero
+RUN apk update --no-cache && apk add --no-cache tzdata
+
+WORKDIR /build
 
 ADD go.mod .
 ADD go.sum .
@@ -16,9 +17,10 @@ COPY app/common/core/cmd/runThings/etc /app/etc
 RUN go build -ldflags="-s -w" -o /app/runThings app/common/core/cmd/runThings/runThings.go
 
 
-FROM alpine
+FROM scratch
 
-RUN apk update --no-cache && apk add --no-cache ca-certificates tzdata
+COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
+COPY --from=builder /usr/share/zoneinfo/Asia/Shanghai /usr/share/zoneinfo/Asia/Shanghai
 ENV TZ Asia/Shanghai
 
 WORKDIR /app
