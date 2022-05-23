@@ -3,6 +3,7 @@ package svc
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 	"runThings/app/common/core/cmd/runThings/internal/config"
 	"strconv"
 	"time"
@@ -93,7 +94,12 @@ func receiveThreshold(str string) {
 		logx.Error(err5)
 		return
 	}
-	receiveThresholdModel(&threshold)
+	switch threshold.Operate {
+	case 0, 1:
+		redisAddUpdateThreshold(threshold.Content)
+	case 2:
+		redisDelThreshold(threshold.Content)
+	}
 }
 
 func receiveRedis(str string) {
@@ -195,11 +201,83 @@ func receiveHeartbeatModel(hb *model.Eq2MqHeartbeat) {
 	}
 }
 
-func receiveThresholdModel(threshold *model.Eq2MqThreshold) {
-	dataType, _ := json.Marshal(threshold.Content)
-	err := service.SetRdValue(threshold.Sn+"_m", string(dataType))
+func redisAddUpdateThreshold(rule model.Rule) {
+	key := rule.Code
+	if len(key) <= 0 {
+		key = rule.Sn
+	}
+	key = key + "_rule"
+	value, _ := service.GetRdValue(key)
+	if len(value) == 0 {
+		saveValue := []model.Rule{rule}
+		dataType, _ := json.Marshal(saveValue)
+		err := service.SetRdValue(key, string(dataType))
+		if err != nil {
+			log.Println(err)
+			return
+		}
+	} else {
+		var saveValue []model.Rule
+		err := json.Unmarshal([]byte(value), &saveValue)
+		if err != nil {
+			log.Println(err)
+			return
+		}
+
+		index := -1
+		for idx, v := range saveValue {
+			if v.Id == rule.Id {
+				index = idx
+				break
+			}
+		}
+		if index < 0 {
+			saveValue = append(saveValue, rule)
+		} else {
+			saveValue[index] = rule
+		}
+		dataType, _ := json.Marshal(saveValue)
+		err = service.SetRdValue(key, string(dataType))
+		if err != nil {
+			log.Println(err)
+			return
+		}
+	}
+}
+
+func redisDelThreshold(rule model.Rule) {
+	objRule := rule
+	key := objRule.Code
+	if len(key) <= 0 {
+		key = objRule.Sn
+	}
+
+	key = key + "_rule"
+	value, _ := service.GetRdValue(key)
+
+	var saveValue []model.Rule
+
+	err := json.Unmarshal([]byte(value), &saveValue)
 	if err != nil {
-		logx.Error(err)
+		log.Println(err)
+		return
+	}
+
+	index := -1
+	for idx, v := range saveValue {
+		if v.Id == objRule.Id {
+			index = idx
+			break
+		}
+	}
+
+	if index >= 0 {
+		saveValue = append(saveValue[:index], saveValue[(index+1):]...)
+	}
+	dataType, _ := json.Marshal(saveValue)
+	err = service.SetRdValue(key, string(dataType))
+	if err != nil {
+		log.Println(err)
 		return
 	}
 }

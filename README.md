@@ -3,7 +3,8 @@
 #### 介绍
 runThings：一个小型IoT管理中间件。可多开
 
-下一步： 接入tdengine
+计划： 
+1、接入tdengine
 
 #### 软件架构
 ![readme](https://gitee.com/luoyaosheng/run-things/raw/master/doc/readme.png)
