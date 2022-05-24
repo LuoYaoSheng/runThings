@@ -9,4 +9,5 @@
 ##### goctl docker -go runThings.go
 #### docker生成
 ##### 进入到 go-things 主目录
-##### docker build -t luoyaosheng/runthings:1.0 -f app/common/core/cmd/runThings/Dockerfile .
+##### docker build -t luoyaosheng/runthings:1.1 -f app/common/core/cmd/runThings/Dockerfile .
+##### docker build -t luoyaosheng/runthings:latest -f app/common/core/cmd/runThings/Dockerfile .

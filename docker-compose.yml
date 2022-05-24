@@ -163,7 +163,7 @@ services:
 
   # 设备信息转发
   runThings:
-    image: luoyaosheng/runthings:1.0
+    image: luoyaosheng/runthings:latest
     restart: always
     hostname: runThings
     container_name: runThings
@@ -184,4 +184,4 @@ networks:
     driver: bridge
     ipam:
       config:
-        - subnet: 172.30.0.0/16
+        - subnet: 172.31.0.0/16
