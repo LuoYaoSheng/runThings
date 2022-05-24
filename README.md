@@ -31,7 +31,11 @@ go mod tidy
 docker-compose up -d -f docker-compose-env.yml
 ```
 4. 修改配置文件 run-things/app/common/core/cmd/runThings/etc
-5. 使用 [demo-gitee](https://gitee.com/luoyaosheng/run-things-demo) / [demo-github](https://github.com/LuoYaoSheng/runThingsDemo)，测试 runThings
+5. 启动项目
+```
+go run runThings.go
+```
+6. 使用 [demo-gitee](https://gitee.com/luoyaosheng/run-things-demo) / [demo-github](https://github.com/LuoYaoSheng/runThingsDemo)，测试 runThings
 
 #### 常见错误
 1、网络启动失败
