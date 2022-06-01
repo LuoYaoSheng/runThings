@@ -28,7 +28,7 @@ go mod tidy
 ```
 2. 启动自建 mqtt、RabbitMQ、influxdb1.8 、Redis 环境，或通过 docker-compose 快速配置环境
 ```
-docker-compose up -d -f docker-compose-env.yml
+docker-compose -f docker-compose-env.yml up -d
 ```
 4. 修改配置文件 run-things/app/common/core/cmd/runThings/etc
 5. 启动项目
